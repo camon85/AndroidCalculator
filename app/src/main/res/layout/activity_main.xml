@@ -19,8 +19,7 @@
         <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/editText"
-            android:layout_weight="1" />
+            android:id="@+id/sourceExchange" />
     </LinearLayout>
 
     <LinearLayout
@@ -55,41 +54,53 @@
         android:columnCount="4"
         android:orientation="horizontal">
         <Button
-            android:text="7"/>
+            android:text="7"
+            android:id="@+id/btn_7"/>
         <Button
-            android:text="8"/>
+            android:text="8"
+            android:id="@+id/btn_8"/>
         <Button
-            android:text="9"/>
+            android:text="9"
+            android:id="@+id/btn_9"/>
         <Button
-            android:text="clear"/>
+            android:text="clear"
+            android:id="@+id/btn_clear"/>
         <Button
-            android:text="4"/>
+            android:text="4"
+            android:id="@+id/btn_4"/>
         <Button
-            android:text="5"/>
+            android:text="5"
+            android:id="@+id/btn_5"/>
         <Button
-            android:text="6"/>
+            android:text="6"
+            android:id="@+id/btn_6"/>
         <Button
-            android:text="←"/>
+            android:text="←"
+            android:id="@+id/btn_backspace"/>
         <Button
-            android:text="1"/>
+            android:text="1"
+            android:id="@+id/btn_1"/>
         <Button
-            android:text="2"/>
+            android:text="2"
+            android:id="@+id/btn_2"/>
         <Button
-            android:text="3"/>
+            android:text="3"
+            android:id="@+id/btn_3"/>
         <Button
             android:text="="
             android:layout_gravity="fill"
             android:layout_rowSpan="2"
-            android:id="@+id/button"/>
+            android:id="@+id/btn_calculate"/>
         <Button
-            android:text="0"/>
+            android:text="0"
+            android:id="@+id/btn_0"/>
         <Button
-            android:text="00"/>
+            android:text="00"
+            android:id="@+id/btn_00"/>
 
         <Button
-            android:text="."
-            />
-
+            android:text="000"
+            android:id="@+id/btn_000"/>
     </GridLayout>
 
 </LinearLayout>
