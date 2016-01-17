@@ -1,22 +1,61 @@
 package com.camon.calculator;
 
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
-import android.widget.EditText;
+import android.widget.Button;
 import android.widget.TextView;
+
+import com.camon.calculator.exchange.Exchange;
+import com.camon.calculator.exchange.ExchangeDataReceiver;
+
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
-    private EditText tvSource;
-    private EditText tvTarget;
-
+    private TextView tvSource;
+    private TextView tvTarget;
+    private TextView tvCurrencyInfo;
+    private TextView tvCurrencyDate;
+    private Button btnSourceExchangeText;
     private static int clickCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initComponents();
+
+
+        ExchangeDataReceiver exchangeDataReceiver = new ExchangeDataReceiver();
+        AsyncTask<String, Void, String> htmlResponse = exchangeDataReceiver.execute();
+        try {
+            // TODO null  처리 ??
+            String html = htmlResponse.get();
+            Exchange exchange = new Exchange(html);
+            tvCurrencyDate.setText("기준일: " + exchange.getRegDate());
+            Map<String, BigDecimal> currencyMap = exchange.makeCurrencyMap();
+
+            // TODO 국가 list 볼수있게 만들기
+            String nationName = "미국 USD";
+            BigDecimal currency = currencyMap.get(nationName);
+            tvCurrencyInfo.setText(nationName + ": " + currency + " KRW");
+            btnSourceExchangeText.setText(nationName);
+            Log.d("htmlResponse", html);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
     }
 
     @Override
@@ -76,9 +115,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             default:
 
         }
-
-        int textLength = tvSource.getText().length();
-        tvSource.setSelection(textLength);
     }
 
     private void initComponents() {
@@ -98,7 +134,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_clear).setOnClickListener(this);
         findViewById(R.id.btn_calculate).setOnClickListener(this);
 
-        tvSource = (EditText) findViewById(R.id.sourceExchange);
-        tvTarget = (EditText) findViewById(R.id.targetExchange);
+        tvSource = (TextView) findViewById(R.id.sourceExchange);
+        tvTarget = (TextView) findViewById(R.id.targetExchange);
+        tvCurrencyInfo = (TextView) findViewById(R.id.currencyInfo);
+        tvCurrencyDate = (TextView) findViewById(R.id.currencyDate);
+        btnSourceExchangeText = (Button) findViewById(R.id.sourceExchangeText);
     }
 }
