@@ -31,7 +31,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
-            android:gravity="center_vertical"
+            android:gravity="center_vertical|center"
             android:background="@android:color/holo_blue_dark"
             android:id="@+id/sourceExchange" />
     </LinearLayout>
@@ -49,6 +49,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="3"
+            android:gravity="center_vertical|center"
             android:id="@+id/targetExchange" />
     </LinearLayout>
 

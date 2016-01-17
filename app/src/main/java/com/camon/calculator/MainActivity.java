@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import com.camon.calculator.exchange.Exchange;
 import com.camon.calculator.exchange.ExchangeDataReceiver;
+import com.camon.calculator.exchange.ExchangeParser;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -23,7 +24,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tvCurrencyInfo;
     private TextView tvCurrencyDate;
     private Button btnSourceExchangeText;
-    private static int clickCount = 0;
+    private static Exchange exchange;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +32,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
         initComponents();
 
-
         ExchangeDataReceiver exchangeDataReceiver = new ExchangeDataReceiver();
         AsyncTask<String, Void, String> htmlResponse = exchangeDataReceiver.execute();
+
         try {
             // TODO null  처리 ??
             String html = htmlResponse.get();
-            Exchange exchange = new Exchange(html);
-            tvCurrencyDate.setText("기준일: " + exchange.getRegDate());
-            Map<String, BigDecimal> currencyMap = exchange.makeCurrencyMap();
+            ExchangeParser exchangeParser = new ExchangeParser(html);
+            tvCurrencyDate.setText("기준일: " + exchangeParser.getRegDate());
+            Map<String, BigDecimal> currencyMap = exchangeParser.makeCurrencyMap();
 
             // TODO 국가 list 볼수있게 만들기
             String nationName = "미국 USD";
@@ -47,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             tvCurrencyInfo.setText(nationName + ": " + currency + " KRW");
             btnSourceExchangeText.setText(nationName);
             Log.d("htmlResponse", html);
+
+            // 선택된 국가 환율 생성
+            exchange = new Exchange(nationName, currency);
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -54,8 +58,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
     }
 
     @Override
@@ -110,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 tvSource.setText("");
                 break;
             case R.id.btn_calculate:
-                tvTarget.setText("count: " + clickCount++);
+                BigDecimal source = new BigDecimal(tvSource.getText().toString());
+                // TODO ### 포매팅
+                tvTarget.setText(exchange.convertKRW(source).toString());
                 break;
             default:
 

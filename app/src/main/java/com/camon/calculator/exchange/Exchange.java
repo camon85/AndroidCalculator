@@ -1,58 +1,24 @@
 package com.camon.calculator.exchange;
 
-import android.util.Log;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by camon on 2016-01-13.
  */
 public class Exchange {
-
-    private static Document doc;
+    private static String nationName;
+    private static BigDecimal currency;
 
     public Exchange() {
     }
 
-    public Exchange(String html) {
-        doc = Jsoup.parse(html);
+    public Exchange(String nationName, BigDecimal currency) {
+        this.nationName = nationName;
+        this.currency = currency;
     }
 
-    public String getRegDate() throws IOException {
-        Element body = doc.body();
-        return body.select("#regdt").text();
+    public BigDecimal convertKRW(BigDecimal source) {
+        return source.multiply(currency);
     }
 
-    public Map<String, BigDecimal> makeCurrencyMap() throws IOException {
-        Element body = doc.body();
-        Elements table = body.select("#printArea");
-        System.out.println(body.select("#regdt").text()); // 기준일
-        Elements tbody = table.select("tbody");
-        Elements tr = tbody.select("tr");
-        tr.remove(0); // 테이블 헤더 제거1
-        tr.remove(0); // 테이블 헤더 제거2
-
-        Map<String, BigDecimal> currencyMap = new HashMap<>();
-
-        for (Element element : tr) {
-            String nationName = element.select("a").text(); // 유럽연합 EUR
-            String price = element.child(9).text(); // 매매기준율 -> "100" 으로 끝나는지 구분
-            currencyMap.put(nationName, new BigDecimal(price));
-        }
-
-        for (String key : currencyMap.keySet()) {
-            Log.d("Exchange", key + "-> " + currencyMap.get(key) + " KRW");
-            System.out.println();
-        }
-
-        return currencyMap;
-    }
 }
